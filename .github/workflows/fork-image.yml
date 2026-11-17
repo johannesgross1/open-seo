@@ -92,6 +92,6 @@ jobs:
           COOLIFY_SERVICE_UUID: ${{ secrets.COOLIFY_SERVICE_UUID }}
         if: env.HAS_COOLIFY == 'true'
         run: |
-          curl -fsS -A "github-actions-fork-image/1.0" \
+          curl -fsS -X POST -A "github-actions-fork-image/1.0" \
             -H "Authorization: Bearer ${COOLIFY_TOKEN}" \
             "${COOLIFY_URL%/}/api/v1/deploy?uuid=${COOLIFY_SERVICE_UUID}&force=true"
