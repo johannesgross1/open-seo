@@ -2,7 +2,7 @@
 # Kept in its own file so syncing with every-app/open-seo never conflicts.
 #
 # - push to main:      build and publish our standalone image
-# - weekly (Mon 03:00 UTC) or manual run: first sync main with upstream
+# - daily (03:00 UTC = 04:00 German winter time) or manual run: first sync main with upstream
 #   (GitHub "Sync fork"), then build and publish
 # - optional: trigger a Coolify redeploy when the secrets COOLIFY_URL,
 #   COOLIFY_TOKEN and COOLIFY_SERVICE_UUID are set
@@ -17,7 +17,7 @@ on:
   push:
     branches: [main]
   schedule:
-    - cron: "0 3 * * 1"
+    - cron: "0 3 * * *"
   workflow_dispatch:
 
 permissions:
