@@ -29,8 +29,8 @@ import { Route as AuthSignInRouteImport } from './routes/_auth.sign-in'
 import { Route as AuthSignUpRouteImport } from './routes/_auth.sign-up'
 import { Route as AuthenticatedOauthConsentRouteImport } from './routes/_authenticated.oauth-consent'
 import { Route as AuthenticatedSubscribeRouteImport } from './routes/_authenticated.subscribe'
-import { Route as AuthenticatedYcRouteImport } from './routes/_authenticated.yc'
 import { Route as AcceptInvitationIdRouteImport } from './routes/accept-invitation.$id'
+import { Route as ApiCspReportRouteImport } from './routes/api/csp-report'
 import { Route as ApiHealthRouteImport } from './routes/api/health'
 import { Route as ApiPrivacyRegionRouteImport } from './routes/api/privacy-region'
 import { Route as ApiSignUpStatusRouteImport } from './routes/api/sign-up-status'
@@ -183,14 +183,14 @@ const AuthenticatedSubscribeRoute = AuthenticatedSubscribeRouteImport.update({
   path: '/subscribe',
   getParentRoute: () => AuthenticatedRoute,
 } as any)
-const AuthenticatedYcRoute = AuthenticatedYcRouteImport.update({
-  id: '/yc',
-  path: '/yc',
-  getParentRoute: () => AuthenticatedRoute,
-} as any)
 const AcceptInvitationIdRoute = AcceptInvitationIdRouteImport.update({
   id: '/accept-invitation/$id',
   path: '/accept-invitation/$id',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiCspReportRoute = ApiCspReportRouteImport.update({
+  id: '/api/csp-report',
+  path: '/api/csp-report',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ApiHealthRoute = ApiHealthRouteImport.update({
@@ -488,8 +488,8 @@ export interface FileRoutesByFullPath {
   '/sign-up': typeof AuthSignUpRoute
   '/oauth-consent': typeof AuthenticatedOauthConsentRoute
   '/subscribe': typeof AuthenticatedSubscribeRoute
-  '/yc': typeof AuthenticatedYcRoute
   '/accept-invitation/$id': typeof AcceptInvitationIdRoute
+  '/api/csp-report': typeof ApiCspReportRoute
   '/api/health': typeof ApiHealthRoute
   '/api/privacy-region': typeof ApiPrivacyRegionRoute
   '/api/sign-up-status': typeof ApiSignUpStatusRoute
@@ -559,8 +559,8 @@ export interface FileRoutesByTo {
   '/sign-up': typeof AuthSignUpRoute
   '/oauth-consent': typeof AuthenticatedOauthConsentRoute
   '/subscribe': typeof AuthenticatedSubscribeRoute
-  '/yc': typeof AuthenticatedYcRoute
   '/accept-invitation/$id': typeof AcceptInvitationIdRoute
+  '/api/csp-report': typeof ApiCspReportRoute
   '/api/health': typeof ApiHealthRoute
   '/api/privacy-region': typeof ApiPrivacyRegionRoute
   '/api/sign-up-status': typeof ApiSignUpStatusRoute
@@ -629,8 +629,8 @@ export interface FileRoutesById {
   '/_auth/sign-up': typeof AuthSignUpRoute
   '/_authenticated/oauth-consent': typeof AuthenticatedOauthConsentRoute
   '/_authenticated/subscribe': typeof AuthenticatedSubscribeRoute
-  '/_authenticated/yc': typeof AuthenticatedYcRoute
   '/accept-invitation/$id': typeof AcceptInvitationIdRoute
+  '/api/csp-report': typeof ApiCspReportRoute
   '/api/health': typeof ApiHealthRoute
   '/api/privacy-region': typeof ApiPrivacyRegionRoute
   '/api/sign-up-status': typeof ApiSignUpStatusRoute
@@ -704,8 +704,8 @@ export interface FileRouteTypes {
     | '/sign-up'
     | '/oauth-consent'
     | '/subscribe'
-    | '/yc'
     | '/accept-invitation/$id'
+    | '/api/csp-report'
     | '/api/health'
     | '/api/privacy-region'
     | '/api/sign-up-status'
@@ -775,8 +775,8 @@ export interface FileRouteTypes {
     | '/sign-up'
     | '/oauth-consent'
     | '/subscribe'
-    | '/yc'
     | '/accept-invitation/$id'
+    | '/api/csp-report'
     | '/api/health'
     | '/api/privacy-region'
     | '/api/sign-up-status'
@@ -844,8 +844,8 @@ export interface FileRouteTypes {
     | '/_auth/sign-up'
     | '/_authenticated/oauth-consent'
     | '/_authenticated/subscribe'
-    | '/_authenticated/yc'
     | '/accept-invitation/$id'
+    | '/api/csp-report'
     | '/api/health'
     | '/api/privacy-region'
     | '/api/sign-up-status'
@@ -912,6 +912,7 @@ export interface RootRouteChildren {
   Char91DotwellKnownChar93HttpMessageSignaturesDirectoryRoute: typeof Char91DotwellKnownChar93HttpMessageSignaturesDirectoryRoute
   Char91DotwellKnownChar93OpenaiAppsChallengeRoute: typeof Char91DotwellKnownChar93OpenaiAppsChallengeRoute
   AcceptInvitationIdRoute: typeof AcceptInvitationIdRoute
+  ApiCspReportRoute: typeof ApiCspReportRoute
   ApiHealthRoute: typeof ApiHealthRoute
   ApiPrivacyRegionRoute: typeof ApiPrivacyRegionRoute
   ApiSignUpStatusRoute: typeof ApiSignUpStatusRoute
@@ -1071,18 +1072,18 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedSubscribeRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
-    '/_authenticated/yc': {
-      id: '/_authenticated/yc'
-      path: '/yc'
-      fullPath: '/yc'
-      preLoaderRoute: typeof AuthenticatedYcRouteImport
-      parentRoute: typeof AuthenticatedRoute
-    }
     '/accept-invitation/$id': {
       id: '/accept-invitation/$id'
       path: '/accept-invitation/$id'
       fullPath: '/accept-invitation/$id'
       preLoaderRoute: typeof AcceptInvitationIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/csp-report': {
+      id: '/api/csp-report'
+      path: '/api/csp-report'
+      fullPath: '/api/csp-report'
+      preLoaderRoute: typeof ApiCspReportRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/api/health': {
@@ -1621,14 +1622,12 @@ const AuthRouteWithChildren = AuthRoute._addFileChildren(AuthRouteChildren)
 interface AuthenticatedRouteChildren {
   AuthenticatedOauthConsentRoute: typeof AuthenticatedOauthConsentRoute
   AuthenticatedSubscribeRoute: typeof AuthenticatedSubscribeRoute
-  AuthenticatedYcRoute: typeof AuthenticatedYcRoute
   AuthenticatedOnboardingIndexRoute: typeof AuthenticatedOnboardingIndexRoute
 }
 
 const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
   AuthenticatedOauthConsentRoute: AuthenticatedOauthConsentRoute,
   AuthenticatedSubscribeRoute: AuthenticatedSubscribeRoute,
-  AuthenticatedYcRoute: AuthenticatedYcRoute,
   AuthenticatedOnboardingIndexRoute: AuthenticatedOnboardingIndexRoute,
 }
 
@@ -1650,6 +1649,7 @@ const rootRouteChildren: RootRouteChildren = {
   Char91DotwellKnownChar93OpenaiAppsChallengeRoute:
     Char91DotwellKnownChar93OpenaiAppsChallengeRoute,
   AcceptInvitationIdRoute: AcceptInvitationIdRoute,
+  ApiCspReportRoute: ApiCspReportRoute,
   ApiHealthRoute: ApiHealthRoute,
   ApiPrivacyRegionRoute: ApiPrivacyRegionRoute,
   ApiSignUpStatusRoute: ApiSignUpStatusRoute,

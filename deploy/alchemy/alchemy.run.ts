@@ -468,9 +468,14 @@ export default Alchemy.Stack(
         flags: wrangler.compatibility_flags,
       },
       // Audit workflow steps parse and persist batches of HTML — the same
-      // CPU allowance the app worker used to carry for them. Configurable
-      // CPU limits are a paid-plan feature (see selfHostPlan).
-      ...(selfHostPlan ? {} : { limits: { cpuMs: 300_000 } }),
+      // CPU allowance the app worker used to carry for them. A workflow run
+      // shares one subrequest budget across its steps, and a 10,000-page
+      // audit spent the 10,000 default before its Lighthouse and billing
+      // calls. Configurable limits are a paid-plan feature (see
+      // selfHostPlan).
+      ...(selfHostPlan
+        ? {}
+        : { limits: { cpuMs: 300_000, subrequests: 200_000 } }),
       observability: {
         enabled: wrangler.observability?.enabled ?? true,
         traces: { enabled: wrangler.observability?.traces?.enabled ?? false },
@@ -584,8 +589,10 @@ export default Alchemy.Stack(
           simple: { limit: 5000, period: 60 },
         }),
 
-        // Per-IP throttle for email sign-in (see src/routes/api/auth/$.ts).
-        // Generous enough that no real person or shared office IP hits it.
+        // Throttle for password sign-in and the reset and verification
+        // emails, per IP and per email address (see
+        // src/server/auth/auth-rate-limit.ts). Generous enough that no real
+        // person or shared office IP hits it.
         AUTH_RATE_LIMIT: Cloudflare.RateLimit("AUTH_RATE_LIMIT", {
           namespaceId: 1002,
           simple: { limit: 20, period: 60 },
@@ -598,6 +605,14 @@ export default Alchemy.Stack(
           "SAVE_KEYWORDS_RATE_LIMIT",
           { namespaceId: 1003, simple: { limit: 60, period: 60 } },
         ),
+
+        // Per-IP throttle on the reports browsers post about the report-only
+        // Content-Security-Policy (see src/server/lib/csp.ts). A page that
+        // trips the policy sends a handful at once.
+        CSP_REPORT_RATE_LIMIT: Cloudflare.RateLimit("CSP_REPORT_RATE_LIMIT", {
+          namespaceId: 1004,
+          simple: { limit: 30, period: 60 },
+        }),
 
         // Durable Objects (the chat agents; the audit scratchpad lives
         // privately in the open-seo-audit worker). Alchemy backs new DO
