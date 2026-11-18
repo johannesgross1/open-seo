@@ -41,15 +41,13 @@ describe("report social image access", () => {
     expect(await response.text()).toBe("image");
   });
 
-  it("falls back to the marketing card on rendering failure and retries next time", async () => {
+  it("answers without an image on rendering failure and retries next time", async () => {
     const error = new Error("Renderer failed");
     const log = vi.spyOn(console, "error").mockImplementation(() => {});
     mocks.renderReportSocialImage.mockRejectedValueOnce(error);
     const response = await handleReportSocialImage(TOKEN);
-    expect(response.status).toBe(302);
-    expect(response.headers.get("Location")).toBe(
-      "https://openseo.so/social-card.jpg",
-    );
+    expect(response.status).toBe(404);
+    expect(response.headers.get("Location")).toBeNull();
     expect(response.headers.get("Cache-Control")).toBe("no-store");
     expect(response.headers.get("Referrer-Policy")).toBe("no-referrer");
     expect(log).toHaveBeenCalledWith(

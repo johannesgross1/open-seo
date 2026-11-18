@@ -1,6 +1,5 @@
 import { ImageResponse } from "takumi-js/response";
 import { domainField } from "@/types/schemas/domain";
-import logo from "../../../public/android-chrome-192x192.png?inline";
 
 /** One template for all reports. Assets stay local; titles never go to an image service. */
 export async function renderReportSocialImage(
@@ -23,18 +22,11 @@ export async function renderReportSocialImage(
         color: "#1d2925",
       }}
     >
-      <div style={{ display: "flex", alignItems: "center", gap: 20 }}>
-        <img src={logo} width={64} height={64} style={{ borderRadius: 14 }} />
-        <div style={{ fontSize: 34, fontWeight: 600, letterSpacing: -1 }}>
-          OpenSEO
-        </div>
-      </div>
       <div
         style={{
           display: "flex",
           flex: 1,
           alignItems: "center",
-          paddingTop: 24,
         }}
       >
         <div

@@ -59,10 +59,10 @@ describe("renderSharePage", () => {
     expect($('meta[property="og:image"]').attr("content")).toBe(imageUrl);
     expect($('meta[name="twitter:image"]').attr("content")).toBe(imageUrl);
     expect($('meta[property="og:image:alt"]').attr("content")).toBe(
-      `${SHARED_REPORT.title} - OpenSEO`,
+      SHARED_REPORT.title,
     );
     expect($('meta[name="twitter:image:alt"]').attr("content")).toBe(
-      `${SHARED_REPORT.title} - OpenSEO`,
+      SHARED_REPORT.title,
     );
     // No app bundle: the reader has never signed in and needs none of it.
     expect(html).not.toContain("/assets/");

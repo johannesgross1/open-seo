@@ -179,7 +179,6 @@ export async function renderSharePage(
       head={
         <>
           <meta property="og:type" content="article" />
-          <meta property="og:site_name" content="OpenSEO" />
           <meta property="og:title" content={report.title} />
           <meta name="twitter:title" content={report.title} />
           {description ? (
@@ -192,12 +191,9 @@ export async function renderSharePage(
           <meta property="og:image" content={imageUrl} />
           <meta property="og:image:width" content="1200" />
           <meta property="og:image:height" content="630" />
-          <meta property="og:image:alt" content={`${report.title} - OpenSEO`} />
+          <meta property="og:image:alt" content={report.title} />
           <meta name="twitter:image" content={imageUrl} />
-          <meta
-            name="twitter:image:alt"
-            content={`${report.title} - OpenSEO`}
-          />
+          <meta name="twitter:image:alt" content={report.title} />
           <meta name="twitter:card" content="summary_large_image" />
         </>
       }

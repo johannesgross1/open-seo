@@ -26,9 +26,8 @@ export async function handleReportSocialImage(
   } catch (error) {
     console.error("Report social image rendering failed", error);
     return new Response(null, {
-      status: 302,
+      status: 404,
       headers: {
-        Location: "https://openseo.so/social-card.jpg",
         "Cache-Control": "no-store",
         "Referrer-Policy": "no-referrer",
         "X-Robots-Tag": "noindex, nofollow",
