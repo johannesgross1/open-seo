@@ -57,6 +57,9 @@ const allowed = [
   "GOOGLE_CLIENT_SECRET",
   "GOOGLE_MAPS_API_KEY",
   "CRAWLER_ACCESS_SECRET",
+  // Fork: per-project DataForSEO accounts (src/server/fork/dataforseo-accounts.ts).
+  "FORK_DATAFORSEO_ACCOUNTS",
+  "FORK_DATAFORSEO_PROJECT_ACCOUNTS",
 ];
 config.vars = {
   ...secrets,

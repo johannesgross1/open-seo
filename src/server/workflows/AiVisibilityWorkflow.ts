@@ -1,3 +1,4 @@
+import { runWithDataforseoProject } from "@/server/fork/dataforseo-accounts";
 import {
   WorkflowEntrypoint,
   type WorkflowEvent,
@@ -85,6 +86,16 @@ export class AiVisibilityWorkflow extends WorkflowEntrypoint<
   AiVisibilityPayload
 > {
   async run(
+    event: WorkflowEvent<AiVisibilityPayload>,
+    engineStep: WorkflowStep,
+  ) {
+    // Fork: route and log the run's DataForSEO calls under its project.
+    return runWithDataforseoProject(event.payload.customer.projectId, () =>
+      this.runForkScoped(event, engineStep),
+    );
+  }
+
+  private async runForkScoped(
     event: WorkflowEvent<AiVisibilityPayload>,
     engineStep: WorkflowStep,
   ) {

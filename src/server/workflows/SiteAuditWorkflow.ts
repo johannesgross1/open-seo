@@ -1,3 +1,4 @@
+import { runWithDataforseoProject } from "@/server/fork/dataforseo-accounts";
 /**
  * Cloudflare Workflow for site audit crawling.
  *
@@ -59,7 +60,10 @@ export class SiteAuditWorkflow extends WorkflowEntrypoint<Env, AuditParams> {
     // Scope a per-request Postgres client for this workflow invocation (no-op in
     // D1 mode). The socket is reclaimed when the invocation ends, so there is
     // nothing to tear down here.
-    return withPgClient(() => this.runScoped(event, yieldingStep(step)));
+    // Fork: route and log the run's DataForSEO calls under its project.
+    return runWithDataforseoProject(event.payload.projectId, () =>
+      withPgClient(() => this.runScoped(event, yieldingStep(step))),
+    );
   }
 
   private async runScoped(

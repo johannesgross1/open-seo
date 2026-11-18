@@ -1,4 +1,9 @@
 import {
+  projectIdFromToolArgs,
+  runWithDataforseoProject,
+} from "@/server/fork/dataforseo-accounts";
+import { getDataforseoSpendTool } from "@/server/fork/get-dataforseo-spend-tool";
+import {
   getAiVisibilityTrackerTool,
   generateAiVisibilityPromptsTool,
   researchAiVisibilityPromptsTool,
@@ -233,10 +238,15 @@ function registerOpenSeoTool<Input extends ToolSchema>(
     },
     async (args, context) => {
       const toolContext = createMcpToolContext(context, authProps);
-      const result = await handler(
-        // oxlint-disable-next-line typescript/no-unsafe-type-assertion -- args were validated against the tool's own inputSchema just above
-        args as ToolArgs<Input>,
-        toolContext,
+      // Fork: route and log the tool's DataForSEO calls under its project.
+      const result = await runWithDataforseoProject(
+        projectIdFromToolArgs(args),
+        () =>
+          handler(
+            // oxlint-disable-next-line typescript/no-unsafe-type-assertion -- args were validated against the tool's own inputSchema just above
+            args as ToolArgs<Input>,
+            toolContext,
+          ),
       );
       if (!supportsApps || !widgetSource.success) return result;
       return rememberWidgetResult(
@@ -397,6 +407,8 @@ export function createOpenSeoMcpServer(
   }
 
   registerOpenSeoTools(register);
+  // Fork: self-hosted spend log; MCP only, not the Every App gateway catalog.
+  register(getDataforseoSpendTool);
 
   return server;
 }

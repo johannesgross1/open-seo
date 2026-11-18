@@ -1,3 +1,4 @@
+import { runWithDataforseoProject } from "@/server/fork/dataforseo-accounts";
 import {
   getOrCreateOrganizationCustomer,
   reserveUsageCredits,
@@ -36,7 +37,11 @@ export async function postAiTrackingTasksOnHold(
   input: Parameters<typeof postAiTrackingTasks>[0],
 ): Promise<{ tasks: PostedAiTrackingTask[]; hold: AiTrackingHold | null }> {
   if (!(await isHostedServerAuthMode())) {
-    return { tasks: (await postAiTrackingTasks(input)).data, hold: null };
+    // Fork: route and log the post under its project.
+    const response = await runWithDataforseoProject(customer.projectId, () =>
+      postAiTrackingTasks(input),
+    );
+    return { tasks: response.data, hold: null };
   }
   const billingCustomer = await getOrCreateOrganizationCustomer(customer);
   // One call gets one hold, or INSUFFICIENT_CREDITS.

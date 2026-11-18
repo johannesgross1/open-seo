@@ -1,3 +1,4 @@
+import { runWithDataforseoProject } from "@/server/fork/dataforseo-accounts";
 import {
   generateText,
   NoObjectGeneratedError,
@@ -268,11 +269,12 @@ export async function researchWebsite(
                       let response;
                       for (let attempt = 0; ; attempt++) {
                         try {
-                          response = await fetchLiveSerp({
-                            keyword,
-                            ...market,
-                            depth: 10,
-                          });
+                          // Fork: route and log the search under its project.
+                          response = await runWithDataforseoProject(
+                            customer.projectId,
+                            () =>
+                              fetchLiveSerp({ keyword, ...market, depth: 10 }),
+                          );
                           break;
                         } catch (error) {
                           if (error instanceof DataforseoChargedTaskError)

@@ -1,3 +1,4 @@
+import { runWithDataforseoProject } from "@/server/fork/dataforseo-accounts";
 import { createMiddleware } from "@tanstack/react-start";
 import { z } from "zod";
 import { AppError } from "@/server/lib/errors";
@@ -51,12 +52,16 @@ export const requireProjectContext = [
       );
     }
 
-    return next({
-      context: {
-        ...authenticatedContext,
-        project: authenticatedContext.project,
-        projectId: authenticatedContext.project.id,
-      },
-    });
+    const project = authenticatedContext.project;
+    // Fork: route and log the request's DataForSEO calls under its project.
+    return runWithDataforseoProject(project.id, () =>
+      next({
+        context: {
+          ...authenticatedContext,
+          project,
+          projectId: project.id,
+        },
+      }),
+    );
   }),
 ] as const;

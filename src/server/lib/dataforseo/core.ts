@@ -1,3 +1,4 @@
+import { recordDataforseoSpend } from "@/server/fork/dataforseo-spend-log";
 import { gatewayRefusal } from "@every-app/sdk/server";
 import { AppError } from "@/server/lib/errors";
 import type { ErrorCode } from "@/shared/error-codes";
@@ -264,6 +265,7 @@ async function requestDataforseo<TTask extends DataforseoTaskLike>(
   // oxlint-disable-next-line typescript/no-unsafe-type-assertion -- the task type is the caller's claim about the payload; billing metadata and item fields are validated downstream (envelope.ts + section Zod schemas)
   const parsed = JSON.parse(text) as DataforseoResponseLike<TTask>;
   warnIfUpstreamResponseFailed(parsed, path);
+  await recordDataforseoSpend(path, parsed.cost); // Fork: spend log
   return parsed;
 }
 

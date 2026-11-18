@@ -1,3 +1,4 @@
+import { runWithDataforseoProject } from "@/server/fork/dataforseo-accounts";
 import {
   WorkflowEntrypoint,
   type WorkflowEvent,
@@ -31,6 +32,16 @@ export class LocalRankWorkflow extends WorkflowEntrypoint<
   LocalRankPayload
 > {
   async run(event: WorkflowEvent<LocalRankPayload>, engineStep: WorkflowStep) {
+    // Fork: route and log the run's DataForSEO calls under its project.
+    return runWithDataforseoProject(event.payload.customer.projectId, () =>
+      this.runForkScoped(event, engineStep),
+    );
+  }
+
+  private async runForkScoped(
+    event: WorkflowEvent<LocalRankPayload>,
+    engineStep: WorkflowStep,
+  ) {
     const step = yieldingStep(engineStep);
     const { checkId, customer } = event.payload;
     const projectId = customer.projectId;

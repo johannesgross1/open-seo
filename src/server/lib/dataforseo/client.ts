@@ -1,3 +1,4 @@
+import { runWithDataforseoProject } from "@/server/fork/dataforseo-accounts";
 import type { CreditFeature } from "@/shared/billing-credit-features";
 import { creditsForProviderUsd } from "@/shared/billing";
 import {
@@ -380,7 +381,11 @@ async function meterDataforseoCalls<T>(
 
   if (!isHostedMode) {
     return Promise.allSettled(
-      executes.map(async (execute) => (await execute()).data),
+      executes.map(
+        async (execute) =>
+          // Fork: route and log the call under its project.
+          (await runWithDataforseoProject(customer.projectId, execute)).data,
+      ),
     );
   }
 

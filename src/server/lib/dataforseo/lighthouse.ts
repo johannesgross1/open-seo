@@ -1,3 +1,4 @@
+import { recordDataforseoSpend } from "@/server/fork/dataforseo-spend-log";
 import {
   dataforseoPostResponse,
   readDataforseoText,
@@ -76,6 +77,7 @@ export async function fetchLighthouseResult(input: {
     // retryable.
     const task = assertOk(body);
     const billing = buildTaskBilling(task);
+    await recordDataforseoSpend(LIGHTHOUSE_PATH, billing.costUsd); // Fork: spend log
     try {
       const data = parseDataforseoLighthousePayload(body, input);
       return { data, billing };

@@ -1,3 +1,4 @@
+import { resolveForkDataforseoAccount } from "@/server/fork/dataforseo-accounts";
 import {
   ConfigurationError,
   integrationFetch,
@@ -77,6 +78,9 @@ export async function getDataforseoFetch(): Promise<typeof fetch> {
     }
     return providerFetch;
   }
+  // Fork: a project's own DataForSEO account (src/server/fork/dataforseo-accounts.ts).
+  const forkAccount = await resolveForkDataforseoAccount();
+  if (forkAccount) return withAuthorization(`Basic ${forkAccount.apiKey}`);
   if (!(await getOptionalEnvValue("DATAFORSEO_API_KEY"))) {
     // No DataForSEO account of its own: buy the calls through treg instead.
     const tregKey = await getOptionalEnvValue("TREG_API_TOKEN");
