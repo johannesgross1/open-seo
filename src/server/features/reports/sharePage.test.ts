@@ -53,6 +53,7 @@ describe("renderSharePage", () => {
     expect(html).toContain(
       `<meta property="og:url" content="https://app.example.com/s/${TOKEN}"/>`,
     );
+    expect(html).toContain(`href="/s/${TOKEN}/raw?print=1"`);
     expect(html).toContain('<meta name="robots" content="noindex, nofollow"/>');
     const $ = load(html);
     const imageUrl = `https://app.example.com/s/${TOKEN}/og.png?v=2026-09-01T10%3A00%3A00.000Z&domain=badseo.dev`;

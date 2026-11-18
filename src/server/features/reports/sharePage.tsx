@@ -222,6 +222,27 @@ export async function renderSharePage(
             </svg>
             <span>Share</span>
           </button>
+          <a
+            className="btn primary"
+            href={`${sharePath(token)}/raw?print=1`}
+            target="_blank"
+            rel="noopener"
+          >
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              aria-hidden="true"
+            >
+              <path d="M12 15V3" />
+              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+              <path d="m7 10 5 5 5-5" />
+            </svg>
+            <span>Save as PDF</span>
+          </a>
         </div>
       </header>
       <iframe

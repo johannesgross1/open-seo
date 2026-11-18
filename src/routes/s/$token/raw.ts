@@ -66,8 +66,12 @@ async function handleSharedReportRequest(
   // The query string is part of the cache key, so `?cachebust=<random>` would
   // otherwise turn every request back into an origin hit. Bounce to the bare
   // path before any query runs: there is no parameter this endpoint reads.
+  //
+  // Fork change: the one query string kept is `?print=1`, the share page's
+  // "Save as PDF" button, the twin of Export in the app.
   const url = new URL(request.url);
-  if (url.search !== "") return bounceTo(`${sharePath(token)}/raw`);
+  const print = url.search === "?print=1";
+  if (url.search !== "" && !print) return bounceTo(`${sharePath(token)}/raw`);
 
   const report = await ReportRepository.getSharedReportByToken(token);
   if (!report || report.archived) return notShared();
@@ -84,8 +88,14 @@ async function handleSharedReportRequest(
   // The 200 is the only cacheable answer here, so the response never needs to
   // vary on Sec-Fetch-Dest: the redirect path is a 302, served `no-store`, and
   // a shared cache stores neither it nor the 404.
+  //
+  // Fork change: print mode opens top-level on purpose, so it skips the bounce.
+  // We write every report ourselves, so a bare report left open after a
+  // cancelled dialog is an accepted cost; the CSP sandbox still applies.
   const dest = request.headers.get("Sec-Fetch-Dest");
-  if (dest !== null && dest !== "iframe") return bounceTo(sharePath(token));
+  if (!print && dest !== null && dest !== "iframe") {
+    return bounceTo(sharePath(token));
+  }
 
   const html = await ReportRepository.getReportHtml(
     report.projectId,
@@ -116,7 +126,8 @@ async function handleSharedReportRequest(
   );
 
   return reportDocumentResponse(html, {
-    cacheControl: EDGE_CACHE_CONTROL,
+    print,
+    cacheControl: print ? "no-store" : EDGE_CACHE_CONTROL,
     noindex: true,
     mapGrants: await createReportMapGrants(html),
   });

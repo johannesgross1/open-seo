@@ -105,6 +105,24 @@ describe("handleSharedReportRequest", () => {
     expect(mocks.getSharedReportByToken).not.toHaveBeenCalled();
   });
 
+  // Fork: the share page's "Save as PDF" button opens the document top-level
+  // in print mode, so it is served there instead of bounced.
+  it("serves print mode top-level with the print script and no caching", async () => {
+    const response = await handleSharedReportRequest(
+      TOKEN,
+      new Request(`https://app.example.com/s/${TOKEN}/raw?print=1`, {
+        headers: { "Sec-Fetch-Dest": "document" },
+      }),
+    );
+
+    expect(response.status).toBe(200);
+    expect(await response.text()).toContain("print()");
+    expect(response.headers.get("content-security-policy")).toContain(
+      "allow-modals",
+    );
+    expect(response.headers.get("cache-control")).toBe("no-store");
+  });
+
   // The redirect needs the header to say so. Bouncing a client that sends no
   // fetch metadata would send it to a page whose frame it cannot load either.
   it("serves the document when the request carries no Sec-Fetch-Dest", async () => {
