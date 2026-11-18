@@ -1,6 +1,8 @@
 import { z } from "zod";
-import { ProjectService } from "@/server/features/projects/services/ProjectService";
-import { getDataforseoSpend } from "@/server/fork/dataforseo-spend-log";
+import {
+  getDataforseoSpendReport,
+  monthsAgo,
+} from "@/server/fork/dataforseo-spend-report";
 import { type ToolContext } from "@/server/mcp/context";
 import { mcpResponse } from "@/server/mcp/formatters";
 import { optionalMetaOutputSchema } from "@/server/mcp/output-schemas";
@@ -19,17 +21,6 @@ const inputSchema = {
 } as const;
 
 type Args = z.infer<z.ZodObject<typeof inputSchema>>;
-
-function monthOf(date: Date): string {
-  return date.toISOString().slice(0, 7);
-}
-
-function monthsAgo(count: number): string {
-  const date = new Date();
-  date.setUTCDate(1);
-  date.setUTCMonth(date.getUTCMonth() - count);
-  return monthOf(date);
-}
 
 const usd = (value: number) => `$${value.toFixed(4)}`;
 
@@ -70,22 +61,12 @@ export const getDataforseoSpendTool = {
     },
   },
   handler: async (args: Args, context: ToolContext) => {
-    const fromMonth = args.fromMonth ?? monthsAgo(2);
-    const toMonth = args.toMonth ?? monthOf(new Date());
-    const projects = await ProjectService.listProjects(
-      context.auth.organizationId,
-    );
-    const names = new Map(projects.map((p) => [p.id, p.name]));
-    const spend = await getDataforseoSpend({
-      fromMonth,
-      toMonth,
-      projectIds: projects.map((p) => p.id),
+    const report = await getDataforseoSpendReport({
+      organizationId: context.auth.organizationId,
+      fromMonth: args.fromMonth ?? monthsAgo(2),
+      toMonth: args.toMonth ?? monthsAgo(0),
     });
-    const rows = spend.rows.map((row) => ({
-      ...row,
-      projectName: row.projectId ? (names.get(row.projectId) ?? null) : null,
-    }));
-    const totalUsd = rows.reduce((sum, row) => sum + row.costUsd, 0);
+    const { fromMonth, toMonth, totalUsd, rows } = report;
 
     const lines = rows.length
       ? rows.map(
@@ -93,7 +74,7 @@ export const getDataforseoSpendTool = {
             `- ${row.month}  ${row.projectName ?? (row.projectId ? row.projectId : "no project")}  account:${row.account}  ${row.calls} calls  ${usd(row.costUsd)}`,
         )
       : ["No DataForSEO spend logged in this range."];
-    const endpointLines = spend.endpoints.map(
+    const endpointLines = report.endpoints.map(
       (row) => `- ${row.path}  ${row.calls} calls  ${usd(row.costUsd)}`,
     );
 
@@ -108,7 +89,7 @@ export const getDataforseoSpendTool = {
         toMonth,
         totalUsd,
         rows,
-        endpoints: spend.endpoints,
+        endpoints: report.endpoints,
       },
     });
   },

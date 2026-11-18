@@ -11,6 +11,7 @@ import {
   CircleHelp,
   CreditCard,
   LogOut,
+  Receipt,
   Settings,
   User,
 } from "lucide-react";
@@ -35,6 +36,7 @@ import {
 } from "@/lib/auth-mode";
 import { everyAppAccountQueryOptions } from "@/client/features/every-app/everyAppAccountQueries";
 import { BILLING_ROUTE } from "@/shared/billing";
+import { DATAFORSEO_COSTS_ANCHOR } from "@/client/features/fork/DataforseoSpendSettings";
 import {
   Sidebar as UiSidebar,
   SidebarContent,
@@ -356,7 +358,21 @@ function AccountFooter({ ready }: { ready: boolean }) {
                     <CreditCard className="size-4" />
                     Billing
                   </DropdownMenuItem>
-                ) : null}
+                ) : (
+                  // Fork: self-hosted DataForSEO spend, on the settings page.
+                  <DropdownMenuItem
+                    render={
+                      <Link
+                        to="/settings"
+                        hash={DATAFORSEO_COSTS_ANCHOR}
+                        onClick={() => setOpenMobile(false)}
+                      />
+                    }
+                  >
+                    <Receipt className="size-4" />
+                    DataForSEO costs
+                  </DropdownMenuItem>
+                )}
                 <DropdownMenuGroup>
                   <DropdownMenuLabel>Theme</DropdownMenuLabel>
                   <div className="px-1 pb-1">

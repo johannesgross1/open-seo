@@ -7,6 +7,7 @@ import { everyAppAccountQueryOptions } from "@/client/features/every-app/everyAp
 import { DeleteAccountSettings } from "@/client/features/settings/DeleteAccountSettings";
 import { McpConnectionsSettings } from "@/client/features/settings/McpConnectionsSettings";
 import { PrivacySettings } from "@/client/features/settings/PrivacySettings";
+import { DataforseoSpendSettings } from "@/client/features/fork/DataforseoSpendSettings";
 import {
   isEveryAppClientAuthMode,
   isHostedClientAuthMode,
@@ -38,6 +39,11 @@ function PersonalSettings() {
       {isHosted ? <McpConnectionsSettings /> : null}
 
       {hasAccounts ? <ApiKeySettings /> : null}
+
+      {/* Fork: DataForSEO spend of this self-hosted install. */}
+      {isHosted || isEveryAppClientAuthMode() ? null : (
+        <DataforseoSpendSettings />
+      )}
 
       {isHosted ? (
         <PrivacySettings />
