@@ -6,6 +6,7 @@ import {
   type AiBrand,
 } from "@/shared/ai-visibility";
 import type { ParsedAiAnswer } from "../providers/dataforseoEvidence";
+import { brandAliases } from "@/server/fork/brand-aliases";
 
 export function ownedAiDomain(hostname: string, owned: string): boolean {
   const host = hostname.toLowerCase().replace(/^www\./, "");
@@ -76,11 +77,14 @@ function rootDomainName(value: string) {
 
 /** Answer text naming the brand. A brand named "acme.com" is written "Acme". */
 export function aiBrandNames(brand: Pick<AiBrand, "name" | "domain" | "own">) {
-  const name = aiBrandLabel(brand);
+  // Fork: the own brand's "|"-separated aliases count as mentions too.
+  const [name, ...aliases] = brand.own
+    ? brandAliases(aiBrandLabel(brand))
+    : [aiBrandLabel(brand)];
   const stem = rootDomainName(name);
   return stem && stem === rootDomainName(brand.domain)
-    ? [name, brand.domain, stem]
-    : [name, brand.domain];
+    ? [name, brand.domain, stem, ...aliases]
+    : [name, brand.domain, ...aliases];
 }
 
 /**
@@ -109,7 +113,8 @@ export function aiPromptIsBranded(
 ): boolean {
   if (
     !isDefaultProjectName(brand.name) &&
-    aiMentionSpans(prompt, [brand.name]).length
+    // Fork: any of the brand's "|"-separated aliases makes a prompt branded.
+    aiMentionSpans(prompt, brandAliases(brand.name)).length
   )
     return true;
   const domain = brand.domain

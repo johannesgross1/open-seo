@@ -49,7 +49,8 @@ function recentMonths(count: number): string[] {
 }
 
 const ENDPOINT_LABELS: [prefix: string, label: string][] = [
-  ["/v3/serp/google/organic", "Rank tracking & SERPs"],
+  ["/v3/serp/google/ai_mode", "AI visibility (Google AI Mode)"],
+  ["/v3/serp/google/organic", "Google results (rank tracking, AI Overviews)"],
   ["/v3/serp/google/maps", "Local rankings"],
   ["/v3/serp/google/local_finder", "Local rankings"],
   ["/v3/serp", "SERPs"],
