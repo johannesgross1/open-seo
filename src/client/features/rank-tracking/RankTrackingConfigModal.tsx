@@ -391,7 +391,13 @@ function CostEstimate({
     serpDepth,
   );
   const checksPerMonth =
-    schedule === "daily" ? 30 : schedule === "weekly" ? 4 : 1;
+    schedule === "daily"
+      ? 30
+      : schedule === "every2days"
+        ? 15
+        : schedule === "weekly"
+          ? 4
+          : 1;
   return (
     <div className="space-y-0.5 rounded-lg bg-muted px-3 py-2.5 text-xs text-muted-foreground">
       <div>

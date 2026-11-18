@@ -79,7 +79,12 @@ export const addRankTrackingKeywordsTool = {
         addedIds: z.array(z.string()),
         scheduledEstimate: z
           .looseObject({
-            scheduleInterval: z.enum(["daily", "weekly", "monthly"]),
+            scheduleInterval: z.enum([
+              "daily",
+              "every2days",
+              "weekly",
+              "monthly",
+            ]),
             costUsd: z.number(),
             costCredits: z.number(),
             checksPerMonth: z.number(),

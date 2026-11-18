@@ -306,7 +306,7 @@ export const rankTrackingConfigs = sqliteTable(
       .default("both"),
     serpDepth: integer("serp_depth").notNull(),
     scheduleInterval: text("schedule_interval", {
-      enum: ["daily", "weekly", "monthly", "manual"],
+      enum: ["daily", "weekly", "monthly", "manual", "every2days"],
     })
       .notNull()
       .default("weekly"),

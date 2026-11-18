@@ -90,9 +90,11 @@ export function describeSchedule(
   const when =
     interval === "daily"
       ? "daily"
-      : interval === "weekly"
-        ? `weekly on ${WEEKDAYS[time.weekday]}s`
-        : "on the last day of each month";
+      : interval === "every2days"
+        ? "every 2 days"
+        : interval === "weekly"
+          ? `weekly on ${WEEKDAYS[time.weekday]}s`
+          : "on the last day of each month";
   return `Runs ${when} at ${localTime} (${utcWeekday}${utcTime} UTC)`;
 }
 

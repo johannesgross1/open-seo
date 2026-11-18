@@ -50,7 +50,7 @@ const inputSchema = {
     .optional()
     .describe("Number of Google results to inspect. Defaults to 40."),
   scheduleInterval: z
-    .enum(["manual", "daily", "weekly", "monthly"])
+    .enum(["manual", "daily", "every2days", "weekly", "monthly"])
     .optional()
     .describe(
       "Check schedule. Defaults to manual so creating a tracker cannot cause future credit spend. Scheduled checks may use credits later.",

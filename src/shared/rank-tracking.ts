@@ -241,9 +241,11 @@ export function scheduledChecksPerMonth(
 ) {
   return scheduleInterval === "daily"
     ? 30
-    : scheduleInterval === "weekly"
-      ? 4
-      : 1;
+    : scheduleInterval === "every2days"
+      ? 15
+      : scheduleInterval === "weekly"
+        ? 4
+        : 1;
 }
 
 export function isScheduledRankTrackingInterval(
@@ -391,7 +393,8 @@ export function computeNextCheckAt(
     return nextDate.toISOString();
   }
 
-  const daysAhead = interval === "daily" ? 1 : 7;
+  const daysAhead =
+    interval === "daily" ? 1 : interval === "every2days" ? 2 : 7;
 
   if (previousNextCheckAt) {
     const anchor = new Date(previousNextCheckAt).getTime();
@@ -438,6 +441,7 @@ export function scheduleLabel(
   interval: RankTrackingConfig["scheduleInterval"],
 ): string {
   if (interval === "daily") return "Daily";
+  if (interval === "every2days") return "Every 2 days";
   if (interval === "weekly") return "Weekly";
   if (interval === "monthly") return "Monthly";
   return "Manual";

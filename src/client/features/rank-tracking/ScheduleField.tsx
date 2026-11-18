@@ -26,6 +26,7 @@ type Schedule = RankTrackingConfig["scheduleInterval"];
 
 const SCHEDULE_ITEMS: { value: Schedule; label: string }[] = [
   { value: "daily", label: "Daily" },
+  { value: "every2days", label: "Every 2 days" },
   { value: "weekly", label: "Weekly" },
   { value: "monthly", label: "Monthly (end of month)" },
   { value: "manual", label: "Manual only" },
@@ -55,7 +56,10 @@ export function ScheduleField({
   const id = useId();
   const items = allowManual
     ? SCHEDULE_ITEMS
-    : SCHEDULE_ITEMS.filter((item) => item.value !== "manual");
+    : // Fork: AI visibility (the only caller without manual) has no every-2-days schedule.
+      SCHEDULE_ITEMS.filter(
+        (item) => item.value !== "manual" && item.value !== "every2days",
+      );
   const [showScheduleTime, setShowScheduleTime] = useState(false);
 
   return (

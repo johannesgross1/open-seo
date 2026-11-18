@@ -227,7 +227,7 @@ async function getValidatedConfig(configId: string, projectId: string) {
 }
 
 function scheduledApprovalError(
-  scheduleInterval: "daily" | "weekly" | "monthly",
+  scheduleInterval: "daily" | "every2days" | "weekly" | "monthly",
   estimate: ReturnType<typeof estimateScheduledRankCheckCredits>,
 ) {
   return new AppError(

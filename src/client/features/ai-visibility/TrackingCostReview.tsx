@@ -210,7 +210,8 @@ export function TrackingCostReview({
                 allowManual={false}
                 schedule={scheduleInterval}
                 onScheduleChange={(value) => {
-                  if (value !== "manual") setScheduleInterval(value);
+                  if (value !== "manual" && value !== "every2days")
+                    setScheduleInterval(value);
                 }}
                 scheduleTime={scheduleTime}
                 onScheduleTimeChange={(time) => {

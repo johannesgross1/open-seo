@@ -52,7 +52,12 @@ export const estimateRankTrackerCostTool = {
         additionalKeywordCount: z.number(),
         scheduledEstimate: z
           .looseObject({
-            scheduleInterval: z.enum(["daily", "weekly", "monthly"]),
+            scheduleInterval: z.enum([
+              "daily",
+              "every2days",
+              "weekly",
+              "monthly",
+            ]),
             costUsd: z.number(),
             costCredits: z.number(),
             checksPerMonth: z.number(),
