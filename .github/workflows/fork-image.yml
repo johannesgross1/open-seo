@@ -85,7 +85,10 @@ jobs:
           cache-from: type=gha
           cache-to: type=gha,mode=max
 
-      - name: Redeploy on Coolify
+      # /deploy?force=true restarted the service without pulling the new
+      # :latest image (server kept the old build, seen 18.11.2026).
+      # /services/{uuid}/restart?latest=true pulls the images first.
+      - name: Restart on Coolify with fresh image
         env:
           COOLIFY_URL: ${{ secrets.COOLIFY_URL }}
           COOLIFY_TOKEN: ${{ secrets.COOLIFY_TOKEN }}
@@ -94,4 +97,4 @@ jobs:
         run: |
           curl -fsS -X POST -A "github-actions-fork-image/1.0" \
             -H "Authorization: Bearer ${COOLIFY_TOKEN}" \
-            "${COOLIFY_URL%/}/api/v1/deploy?uuid=${COOLIFY_SERVICE_UUID}&force=true"
+            "${COOLIFY_URL%/}/api/v1/services/${COOLIFY_SERVICE_UUID}/restart?latest=true"
