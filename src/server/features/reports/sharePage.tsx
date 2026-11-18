@@ -19,8 +19,6 @@ import { domainField } from "@/types/schemas/domain";
 // JavaScript beyond the Share button's clipboard handler. JSX so every value
 // from the row is escaped by React, not by hand.
 
-const MARKETING_URL = "https://openseo.so/?utm_source=shared_report";
-
 const MAX_DESCRIPTION_CHARS = 200;
 
 /**
@@ -80,19 +78,6 @@ document.getElementById("share").addEventListener("click",async function(){
   setTimeout(function(){label.textContent="Share"},2000);
 });`;
 
-function TryButton() {
-  return (
-    <a
-      className="btn primary"
-      href={MARKETING_URL}
-      target="_blank"
-      rel="noreferrer"
-    >
-      Try OpenSEO
-    </a>
-  );
-}
-
 function Document({
   title,
   head,
@@ -111,7 +96,7 @@ function Document({
           content="width=device-width, initial-scale=1, viewport-fit=cover"
         />
         <meta name="robots" content="noindex, nofollow" />
-        <title>{`${title} - OpenSEO`}</title>
+        <title>{title}</title>
         {head}
         <link rel="icon" href="/favicon.ico" />
         <style dangerouslySetInnerHTML={{ __html: STYLES }} />
@@ -144,7 +129,6 @@ function unavailable(heading: string, detail: string): Response {
       <main>
         <h1>{heading}</h1>
         <p>{detail}</p>
-        <TryButton />
       </main>
     </Document>,
     404,
@@ -221,9 +205,7 @@ export async function renderSharePage(
       <header>
         <div className="title">
           <h1>{report.title}</h1>
-          <p className="meta">
-            Made with OpenSEO · Updated {formatRelativeTime(report.updatedAt)}
-          </p>
+          <p className="meta">Updated {formatRelativeTime(report.updatedAt)}</p>
         </div>
         <div className="actions">
           <button type="button" className="btn" id="share">
@@ -244,7 +226,6 @@ export async function renderSharePage(
             </svg>
             <span>Share</span>
           </button>
-          <TryButton />
         </div>
       </header>
       <iframe

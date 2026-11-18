@@ -46,9 +46,7 @@ describe("renderSharePage", () => {
     expect(html).toContain(
       `<iframe src="/s/${TOKEN}/raw" sandbox="${REPORT_IFRAME_SANDBOX}"`,
     );
-    expect(html).toContain(
-      "<title>badseo.dev &lt;SEO&gt; audit - OpenSEO</title>",
-    );
+    expect(html).toContain("<title>badseo.dev &lt;SEO&gt; audit</title>");
     expect(html).toContain(
       '<meta property="og:description" content="Fix the &quot;titles&quot; first."/>',
     );
