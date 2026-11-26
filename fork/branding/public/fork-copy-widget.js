@@ -1,3 +1,4 @@
+/* oxlint-disable */
 /* Copy buttons for message drafts in reports (see src/shared/fork-copy-widget.ts).
    Copies the element a button points at, as rich HTML (links stay clickable
    when pasted into a mail client) plus plain text. Reads the page only. */
