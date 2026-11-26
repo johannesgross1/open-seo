@@ -5,6 +5,7 @@ import {
   SHARE_TOKEN_PATTERN,
   sharesEnabled,
 } from "@/server/features/reports/shareAccess";
+import { FORK_REPORT_IFRAME_ALLOW } from "@/shared/fork-copy-widget";
 import { REPORT_IFRAME_SANDBOX } from "@/shared/report-sandbox";
 import { sharePath } from "@/shared/report-share";
 import { domainField } from "@/types/schemas/domain";
@@ -250,6 +251,7 @@ export async function renderSharePage(
       <iframe
         src={`${sharePath(token)}/raw`}
         sandbox={REPORT_IFRAME_SANDBOX}
+        allow={FORK_REPORT_IFRAME_ALLOW}
         referrerPolicy="no-referrer"
         title={report.title}
       />

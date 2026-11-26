@@ -1,3 +1,4 @@
+import { isShareExpired } from "@/server/fork/share-expiry";
 import { and, count, desc, eq, isNotNull, isNull, ne, sum } from "drizzle-orm";
 import { db } from "@/db";
 import { projects, reports } from "@/db/schema";
@@ -208,13 +209,18 @@ async function getSharedReportByToken(token: string): Promise<{
       skill: reports.skill,
       updatedAt: reports.updatedAt,
       archivedAt: projects.archivedAt,
+      forkProjectName: projects.name,
+      forkSharedAt: reports.sharedAt,
     })
     .from(reports)
     .innerJoin(projects, eq(projects.id, reports.projectId))
     .where(eq(reports.shareToken, token))
     .limit(1);
   if (!row) return null;
-  const { archivedAt, ...report } = row;
+  const { archivedAt, forkProjectName, forkSharedAt, ...report } = row;
+  // Fork: links in "[24h]" projects stop working on their own (share-expiry.ts).
+  if (isShareExpired({ projectName: forkProjectName, sharedAt: forkSharedAt }))
+    return null;
   return { ...report, archived: archivedAt !== null };
 }
 

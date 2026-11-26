@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { SkeletonTableRows } from "@/client/components/SkeletonPresets";
 import { Skeleton } from "@/client/components/ui/skeleton";
+import { FORK_REPORT_IFRAME_ALLOW } from "@/shared/fork-copy-widget";
 import { REPORT_IFRAME_SANDBOX } from "@/shared/report-sandbox";
 
 /**
@@ -33,6 +34,7 @@ export function ReportViewer({
       <iframe
         src={src}
         sandbox={REPORT_IFRAME_SANDBOX}
+        allow={FORK_REPORT_IFRAME_ALLOW}
         referrerPolicy="no-referrer"
         title={title}
         onLoad={() => setLoadedSrc(src)}

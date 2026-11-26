@@ -1,3 +1,8 @@
+import {
+  wantsForkCopyWidget,
+  withForkCopyWidget,
+} from "@/shared/fork-copy-widget";
+
 // The report sandbox lives here so the two halves cannot drift: the header
 // `/r/<reportId>` serves, and the `sandbox` attribute the in-app viewer puts on
 // the iframe pointing at that same document. A report is a full HTML document
@@ -153,8 +158,15 @@ export function reportDocumentResponse(
 ): Response {
   // The widget only loads where it has a map to draw.
   const mapGrants = options.mapGrants ?? [];
-  const nonce = mapGrants.length > 0 ? crypto.randomUUID() : undefined;
-  const document = nonce ? withWidgetScript(html, nonce, mapGrants) : html;
+  // Fork: message drafts get the copy-button script (src/shared/fork-copy-widget.ts).
+  const forkCopy = wantsForkCopyWidget(html);
+  const nonce =
+    mapGrants.length > 0 || forkCopy ? crypto.randomUUID() : undefined;
+  let document =
+    nonce && mapGrants.length > 0
+      ? withWidgetScript(html, nonce, mapGrants)
+      : html;
+  if (nonce && forkCopy) document = withForkCopyWidget(document, nonce);
   return new Response(options.print ? withPrintScript(document) : document, {
     status: 200,
     headers: {
