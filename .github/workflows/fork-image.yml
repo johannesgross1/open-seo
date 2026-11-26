@@ -54,6 +54,11 @@ jobs:
         with:
           ref: main
 
+      # Own favicon set. Copied over upstream's files at build time only, so
+      # src/public stays identical to upstream and the daily sync never conflicts.
+      - name: Apply fork branding (favicons)
+        run: cp -v fork/branding/public/* src/public/
+
       - name: Set up Buildx
         uses: docker/setup-buildx-action@8d2750c68a42422c14e847fe6c8ac0403b4cbd6f # v3.12.0
 
