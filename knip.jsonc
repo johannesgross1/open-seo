@@ -45,7 +45,8 @@
     "!.agents/**",
     "!.claude/**",
   ],
-  "ignore": ["drizzle/remote-d1.config.ts"],
+  // Fork: static files copied into src/public/ at image build (fork-image.yml)
+  "ignore": ["drizzle/remote-d1.config.ts", "fork/branding/**"],
   // GitHub CLI, used by deploy:prod; installed system-wide, not via npm
   "ignoreBinaries": ["gh"],
   // Disable Drizzle plugin - it tries to load drizzle/sqlite.config.ts which imports cloudflare:workers
