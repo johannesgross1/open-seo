@@ -1,4 +1,5 @@
 import { and, eq } from "drizzle-orm";
+import { withRememberedGoogleEmails } from "@/server/fork/google-account-emails";
 import { db } from "@/db";
 import { account } from "@/db/schema";
 import { AppError } from "@/server/lib/errors";
@@ -96,7 +97,8 @@ async function listPropertiesForUserWithGrantStatus(userId: string) {
       }
     }),
   );
-  return { accounts };
+  // Fork: label expired accounts with their stored email.
+  return { accounts: await withRememberedGoogleEmails(userId, accounts) };
 }
 
 async function setProperty(input: {

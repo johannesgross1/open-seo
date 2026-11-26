@@ -1,4 +1,5 @@
 import { and, eq } from "drizzle-orm";
+import { withRememberedGoogleEmails } from "@/server/fork/google-account-emails";
 import { db } from "@/db";
 import { account } from "@/db/schema";
 import { GSC_OAUTH_PROVIDER_ID } from "@/shared/gsc";
@@ -165,7 +166,8 @@ async function listSitesForUserWithGrantStatus(
       }
     }),
   );
-  return { accounts };
+  // Fork: label expired accounts with their stored email.
+  return { accounts: await withRememberedGoogleEmails(userId, accounts) };
 }
 
 /** Map a verified property to a project. Rejects unverified properties and
